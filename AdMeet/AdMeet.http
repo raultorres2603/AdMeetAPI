@@ -1,0 +1,6 @@
+@AdMeet_HostAddress = http://localhost:5219
+
+GET {{AdMeet_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
