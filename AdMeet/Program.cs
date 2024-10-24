@@ -16,7 +16,7 @@ builder.Services.AddSwaggerGen();
 builder.Services.Configure<Jwt>(builder.Configuration.GetSection("JwtSettings"));
 
 var jwtSettings = builder.Configuration.GetSection("JwtSettings").Get<Jwt>();
-var key = Encoding.UTF8.GetBytes(jwtSettings!.SecretKey);
+var key = Encoding.UTF8.GetBytes(jwtSettings!.SecretKey!);
 
 builder.Services.AddAuthentication(options =>
     {
