@@ -1,17 +1,22 @@
+using System.ComponentModel.DataAnnotations;
+using AdMeet.Contexts;
+
 namespace AdMeet.Models;
 
 public class User
 {
-    public string Id { get; set; }
-    public string? Name { get; set; }
-    public string? Email { get; set; }
-    public string? Password { get; set; }
-
-    public User(string name, string email, string password)
+    public User(string email, string password)
     {
-        this.Id = Guid.NewGuid().ToString();
-        this.Name = name;
-        this.Email = email;
-        this.Password = password;
+        Id = Guid.NewGuid().ToString();
+        Email = email;
+        Password = password;
     }
+
+    public AppDbContext Context { get; set; }
+
+    [MaxLength(100)] public string Id { get; set; }
+
+    [MaxLength(100)] public string? Email { get; set; }
+
+    [MaxLength(100)] public string? Password { get; set; }
 }

@@ -1,8 +1,10 @@
 using System.Text;
+using AdMeet.Contexts;
 using AdMeet.Models;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.IdentityModel.Tokens;
 using DotNetEnv;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 
 Env.Load();
 
@@ -39,6 +41,9 @@ builder.Services.AddAuthentication(options =>
             IssuerSigningKey = new SymmetricSecurityKey(key)
         };
     });
+builder.Services.AddDbContext<AppDbContext>(options =>
+    options.UseMySql(Environment.GetEnvironmentVariable("MYSQL_CONN"),
+        ServerVersion.AutoDetect(Environment.GetEnvironmentVariable("MYSQL_CONN"))));
 
 
 var app = builder.Build();
