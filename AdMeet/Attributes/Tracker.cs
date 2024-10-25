@@ -17,7 +17,5 @@ public class Tracker : ActionFilterAttribute
         var endpoint = context.ActionDescriptor.DisplayName;
 
         _logger.LogInformation($"Endpoint: {endpoint}");
-
-        base.OnActionExecuting(context);
     }
 }
