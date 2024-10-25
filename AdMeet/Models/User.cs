@@ -1,5 +1,4 @@
 using System.ComponentModel.DataAnnotations;
-using AdMeet.Contexts;
 
 namespace AdMeet.Models;
 
@@ -11,8 +10,6 @@ public class User
         Email = email;
         Password = password;
     }
-
-    public AppDbContext Context { get; set; }
 
     [MaxLength(100)] public string Id { get; set; }
 

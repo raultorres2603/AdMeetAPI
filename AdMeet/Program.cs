@@ -1,6 +1,8 @@
 using System.Text;
+using AdMeet.Attributes;
 using AdMeet.Contexts;
 using AdMeet.Models;
+using AdMeet.Services;
 using DotNetEnv;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
@@ -12,7 +14,10 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-builder.Services.AddControllers();
+builder.Services.AddControllers(options =>
+{
+    options.Filters.Add<Tracker>();
+});
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -45,15 +50,19 @@ builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseMySql(Environment.GetEnvironmentVariable("MYSQL_CONN"),
         ServerVersion.AutoDetect(Environment.GetEnvironmentVariable("MYSQL_CONN"))));
 
+builder.Services.AddTransient<UserServices>();
+
 
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
+/*
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+*/
 
 app.UseHttpsRedirection();
 
