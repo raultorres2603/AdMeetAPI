@@ -2,6 +2,9 @@ using System.Text;
 using AdMeet.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
+using DotNetEnv;
+
+Env.Load();
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,7 +19,7 @@ builder.Services.AddSwaggerGen();
 builder.Services.Configure<Jwt>(builder.Configuration.GetSection("JwtSettings"));
 
 var jwtSettings = builder.Configuration.GetSection("JwtSettings").Get<Jwt>();
-var key = Encoding.UTF8.GetBytes(jwtSettings!.SecretKey!);
+var key = Encoding.UTF8.GetBytes(Environment.GetEnvironmentVariable("JWT_SK")!);
 
 builder.Services.AddAuthentication(options =>
     {
@@ -31,8 +34,8 @@ builder.Services.AddAuthentication(options =>
             ValidateAudience = true,
             ValidateLifetime = true,
             ValidateIssuerSigningKey = true,
-            ValidIssuer = jwtSettings.Issuer,
-            ValidAudience = jwtSettings.Audience,
+            ValidIssuer = jwtSettings!.Issuer,
+            ValidAudience = jwtSettings!.Audience,
             IssuerSigningKey = new SymmetricSecurityKey(key)
         };
     });
