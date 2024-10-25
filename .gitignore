@@ -18,7 +18,6 @@ mono_crash.*
 
 # Env
 .env
-.env.*
 
 # Build results
 [Dd]ebug/
