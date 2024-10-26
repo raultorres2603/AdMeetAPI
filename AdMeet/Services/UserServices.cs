@@ -23,4 +23,9 @@ public class UserServices
             return null;
         return new Jwt().GenerateToken(user!);
     }
+
+    public async Task<List<User>> GetUsers()
+    {
+        return await _context.Users.ToListAsync();
+    }
 }

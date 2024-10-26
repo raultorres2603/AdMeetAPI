@@ -9,6 +9,7 @@ namespace AdMeet.Controllers;
 [Route("api/user")]
 [Consumes("application/json")]
 [Produces("application/json")]
+[TypeFilter(typeof(Tracker))]
 public class UserController : ControllerBase
 {
     private readonly UserServices _userServices;
@@ -19,11 +20,17 @@ public class UserController : ControllerBase
     }
 
     [HttpPost("login", Name = "Login")]
-    [TypeFilter(typeof(Tracker))]
     public async Task<IActionResult> Login([FromBody] User user)
     {
         var token = await _userServices.LogIn(user);
         if (token == null) return NotFound($"User {user.Email} not found");
         return Ok(token);
+    }
+
+    [HttpGet("all", Name = "GetUsers")]
+    [JwtAuth]
+    public async Task<IActionResult> GetUsers()
+    {
+        return Ok(await _userServices.GetUsers());
     }
 }
