@@ -21,4 +21,13 @@ public class UserServices(AppDbContext context)
     {
         return await context.Users.ToListAsync();
     }
+
+    public async Task<string> Register(User u)
+    {
+        var uExist = await context.Users.FirstOrDefaultAsync(cU => cU.Email!.Equals(u.Email));
+        if (uExist != null) return "UAE";
+        await context.Users.AddAsync(u);
+        await context.SaveChangesAsync();
+        return "OK";
+    }
 }
