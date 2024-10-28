@@ -4,9 +4,16 @@ using Microsoft.EntityFrameworkCore;
 
 namespace AdMeet.Services;
 
-public class UserServices(AppDbContext context)
+public interface IUserServices
 {
-    public async Task<string?> LogIn(User us)
+    Task<string> LogIn(IUser us);
+    Task<List<IUser>> GetUsers();
+    Task<string> Register(IUser u);
+}
+
+public class UserServices(AppDbContext context): IUserServices
+{
+    public async Task<string?> LogIn(IUser us)
     {
         // We check if user exists
         var user = await context.Users.FirstOrDefaultAsync(u => u.Email == us.Email);
@@ -17,12 +24,9 @@ public class UserServices(AppDbContext context)
         return new Jwt().GenerateToken(user!);
     }
 
-    public async Task<List<User>> GetUsers()
-    {
-        return await context.Users.ToListAsync();
-    }
+    public async Task<List<IUser>> GetUsers() => await context.Users.ToListAsync();
 
-    public async Task<string> Register(User u)
+    public async Task<string> Register(IUser u)
     {
         var uExist = await context.Users.FirstOrDefaultAsync(cU => cU.Email!.Equals(u.Email));
         if (uExist != null) return "UAE";

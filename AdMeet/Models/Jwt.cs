@@ -6,14 +6,23 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace AdMeet.Models;
 
-public class Jwt
+public interface IJwt
+{
+    public string? SecretKey { get; set; }
+    public string? Issuer { get; set; }
+    public string? Audience { get; set; }
+    public int ExpiresInMinutes { get; set; }
+    public string GenerateToken(IUser u);
+}
+
+public class Jwt: IJwt
 {
     public string? SecretKey { get; set; } = Environment.GetEnvironmentVariable("JWT_SK");
     public string? Issuer { get; set; } = "AdMeetI";
     public string? Audience { get; set; } = "AdMeetU";
     public int ExpiresInMinutes { get; set; } = 60;
 
-    public string GenerateToken(User u)
+    public string GenerateToken(IUser u)
     {
         var tokenHandler = new JwtSecurityTokenHandler();
         var key = Encoding.UTF8.GetBytes(SecretKey!);
