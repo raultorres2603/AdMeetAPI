@@ -36,8 +36,8 @@ public class JwtAuth : Attribute, IAuthorizationFilter
                 IssuerSigningKey = new SymmetricSecurityKey(key),
                 ValidateIssuer = true, // Configúralo si necesitas validar el emisor
                 ValidateAudience = true, // Configúralo si necesitas validar la audiencia
-                ValidIssuer = "AdMeetI",
-                ValidAudience = "AdMeetU",
+                ValidIssuer = Environment.GetEnvironmentVariable("I"),
+                ValidAudience = Environment.GetEnvironmentVariable("U"),
                 ValidateLifetime = true
             }, out var validatedToken);
             Console.WriteLine(validatedToken);
