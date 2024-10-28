@@ -1,3 +1,4 @@
+using System.Globalization;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
@@ -21,9 +22,12 @@ public class Jwt
             Subject = new ClaimsIdentity(new[]
             {
                 new Claim(ClaimTypes.Name, "AdMeet"),
+                new Claim(ClaimTypes.Role, "User"),
+                new Claim(ClaimTypes.NameIdentifier, u.Id),
                 new Claim("Id", u.Id),
                 new Claim("Email", u.Email!)
-            }),
+            }), Issuer = Issuer,
+            Audience = Audience,
             Expires = DateTime.UtcNow.AddMinutes(ExpiresInMinutes),
             SigningCredentials =
                 new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)

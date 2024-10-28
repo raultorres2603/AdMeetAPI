@@ -9,7 +9,6 @@ namespace AdMeet.Attributes;
 public class JwtAuth : Attribute, IAuthorizationFilter
 {
     private readonly string _secretKey = Environment.GetEnvironmentVariable("JWT_SK")!;
-
     public void OnAuthorization(AuthorizationFilterContext context)
     {
         var authorizationHeader = context.HttpContext.Request.Headers["Authorization"].FirstOrDefault();
@@ -19,7 +18,7 @@ public class JwtAuth : Attribute, IAuthorizationFilter
             return;
         }
 
-        var token = authorizationHeader.Substring("Bearer ".Length).Trim();
+        var token = authorizationHeader["Bearer ".Length..].Trim();
 
         if (string.IsNullOrEmpty(token) || ValidateJwtToken(token) == null) context.Result = new UnauthorizedResult();
     }
@@ -37,13 +36,16 @@ public class JwtAuth : Attribute, IAuthorizationFilter
                 IssuerSigningKey = new SymmetricSecurityKey(key),
                 ValidateIssuer = true, // Configúralo si necesitas validar el emisor
                 ValidateAudience = true, // Configúralo si necesitas validar la audiencia
-                ClockSkew = TimeSpan.Zero,
+                ValidIssuer = "AdMeetI",
+                ValidAudience = "AdMeetU",
                 ValidateLifetime = true
             }, out var validatedToken);
+            Console.WriteLine(validatedToken);
             return token;
         }
-        catch
+        catch (Exception e)
         {
+            Console.WriteLine(e);
             return null!;
         }
     }
