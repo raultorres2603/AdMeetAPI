@@ -13,10 +13,12 @@ namespace AdMeet.Controllers;
 public class UserController : ControllerBase
 {
     private readonly UserServices _userServices;
+    private readonly ILogger _logger;
 
-    public UserController(UserServices userServices)
+    public UserController(UserServices userServices, ILogger logger)
     {
         _userServices = userServices;
+        _logger = logger;
     }
 
     [HttpPost("login", Name = "Login")]
@@ -29,8 +31,11 @@ public class UserController : ControllerBase
 
     [HttpGet("{jwt}/all", Name = "GetUsers")]
     [JwtAuth]
-    public async Task<IActionResult> GetUsers()
+    public async Task<IActionResult> GetUsers([FromRoute] string jwt)
     {
-        return Ok(await _userServices.GetUsers());
+        _logger.LogInformation($"Retrieving users: {jwt}");
+        List<User> users = await _userServices.GetUsers();
+        _logger.LogInformation($"Done retrieving users: {jwt}");
+        return Ok(users);
     }
 }
