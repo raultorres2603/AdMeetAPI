@@ -21,10 +21,10 @@ public class JwtAuth : Attribute, IAuthorizationFilter
 
         var token = authorizationHeader.Substring("Bearer ".Length).Trim();
 
-        if (!ValidateJwtToken(token)) context.Result = new UnauthorizedResult();
+        if (string.IsNullOrEmpty(token) || ValidateJwtToken(token) == null) context.Result = new UnauthorizedResult();
     }
 
-    private bool ValidateJwtToken(string token)
+    private string? ValidateJwtToken(string token)
     {
         var tokenHandler = new JwtSecurityTokenHandler();
         var key = Encoding.UTF8.GetBytes(_secretKey);
@@ -40,12 +40,11 @@ public class JwtAuth : Attribute, IAuthorizationFilter
                 ClockSkew = TimeSpan.Zero,
                 ValidateLifetime = true
             }, out var validatedToken);
-
-            return true;
+            return token;
         }
         catch
         {
-            return false;
+            return null!;
         }
     }
 }

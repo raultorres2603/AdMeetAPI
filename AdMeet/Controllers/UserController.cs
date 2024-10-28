@@ -27,7 +27,7 @@ public class UserController : ControllerBase
         return Ok(token);
     }
 
-    [HttpGet("all", Name = "GetUsers")]
+    [HttpGet("{jwt}/all", Name = "GetUsers")]
     [JwtAuth]
     public async Task<IActionResult> GetUsers()
     {
