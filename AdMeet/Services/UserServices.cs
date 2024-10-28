@@ -4,19 +4,12 @@ using Microsoft.EntityFrameworkCore;
 
 namespace AdMeet.Services;
 
-public class UserServices
+public class UserServices(AppDbContext context)
 {
-    private readonly AppDbContext _context;
-
-    public UserServices(AppDbContext context)
-    {
-        _context = context;
-    }
-
     public async Task<string?> LogIn(User us)
     {
         // We check if user exists
-        var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == us.Email);
+        var user = await context.Users.FirstOrDefaultAsync(u => u.Email == us.Email);
         if (user == null)
             return null;
         if (!user.Password!.Equals(us.Password))
@@ -26,6 +19,6 @@ public class UserServices
 
     public async Task<List<User>> GetUsers()
     {
-        return await _context.Users.ToListAsync();
+        return await context.Users.ToListAsync();
     }
 }
