@@ -12,17 +12,17 @@ public interface IJwt
     public string? Issuer { get; set; }
     public string? Audience { get; set; }
     public int ExpiresInMinutes { get; set; }
-    public string GenerateToken(IUser u);
+    public string GenerateToken(User u);
 }
 
-public class Jwt: IJwt
+public class Jwt
 {
     public string? SecretKey { get; set; } = Environment.GetEnvironmentVariable("JWT_SK");
     public string? Issuer { get; set; } = "AdMeetI";
     public string? Audience { get; set; } = "AdMeetU";
     public int ExpiresInMinutes { get; set; } = 60;
 
-    public string GenerateToken(IUser u)
+    public string GenerateToken(User u)
     {
         var tokenHandler = new JwtSecurityTokenHandler();
         var key = Encoding.UTF8.GetBytes(SecretKey!);

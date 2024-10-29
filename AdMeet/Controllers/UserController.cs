@@ -10,10 +10,10 @@ namespace AdMeet.Controllers;
 [Consumes("application/json")]
 [Produces("application/json")]
 [TypeFilter(typeof(Tracker))]
-public class UserController(IUserServices userServices, ILogger<UserController> logger) : ControllerBase
+public class UserController(UserServices userServices, ILogger<UserController> logger) : ControllerBase
 {
     [HttpPost("login", Name = "Login")]
-    public async Task<IActionResult> Login([FromBody] IUser user)
+    public async Task<IActionResult> Login([FromBody] User user)
     {
         var token = await userServices.LogIn(user);
         if (token == null) return NotFound($"User {user.Email} not found");
@@ -25,13 +25,13 @@ public class UserController(IUserServices userServices, ILogger<UserController> 
     public async Task<IActionResult> GetUsers([FromRoute] string jwt)
     {
         logger.LogInformation($"Retrieving users: {jwt}");
-        List<IUser> users = await userServices.GetUsers();
+        List<User> users = await userServices.GetUsers();
         logger.LogInformation($"Done retrieving users: {jwt}");
         return Ok(users);
     }
     
     [HttpPost("register", Name = "Register")]
-    public async Task<IActionResult> Register([FromBody] IUser user)
+    public async Task<IActionResult> Register([FromBody] User user)
     {
         var result = await userServices.Register(user);
         if (result != "UAE") return Ok(result);
