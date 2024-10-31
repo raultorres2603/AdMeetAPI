@@ -1,6 +1,6 @@
 using AdMeet.Attributes;
+using AdMeet.Inter;
 using AdMeet.Models;
-using AdMeet.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AdMeet.Controllers;
@@ -10,7 +10,7 @@ namespace AdMeet.Controllers;
 [Consumes("application/json")]
 [Produces("application/json")]
 [TypeFilter(typeof(Tracker))]
-public class UserController(UserServices userServices, ILogger<UserController> logger) : ControllerBase
+public class UserController(IUserServices userServices, ILogger<UserController> logger) : ControllerBase
 {
     [HttpPost("login", Name = "Login")]
     public async Task<IActionResult> Login([FromBody] User user)

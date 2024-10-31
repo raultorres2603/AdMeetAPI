@@ -1,10 +1,11 @@
 using AdMeet.Contexts;
+using AdMeet.Inter;
 using AdMeet.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace AdMeet.Services;
 
-public class UserServices(AppDbContext context)
+public class UserServices(AppDbContext context, IJwt jwt) : IUserServices
 {
     public async Task<string?> LogIn(User us)
     {
@@ -14,7 +15,7 @@ public class UserServices(AppDbContext context)
             return null;
         if (!user.Password!.Equals(us.Password))
             return null;
-        return new Jwt().GenerateToken(user!);
+        return jwt.GenerateToken(user);
     }
 
     public async Task<List<User>> GetUsers() => await context.Users.ToListAsync();

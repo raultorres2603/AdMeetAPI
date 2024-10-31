@@ -1,6 +1,7 @@
 using System.Text;
 using AdMeet.Attributes;
 using AdMeet.Contexts;
+using AdMeet.Inter;
 using AdMeet.Models;
 using AdMeet.Services;
 using DotNetEnv;
@@ -46,7 +47,8 @@ builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseMySql(Environment.GetEnvironmentVariable("MYSQL_CONN"),
         ServerVersion.AutoDetect(Environment.GetEnvironmentVariable("MYSQL_CONN"))));
 
-builder.Services.AddTransient<UserServices>();
+builder.Services.AddTransient<IJwt, Jwt>();
+builder.Services.AddScoped<IUserServices, UserServices>();
 
 
 var app = builder.Build();
