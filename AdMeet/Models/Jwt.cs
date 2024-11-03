@@ -36,4 +36,35 @@ public class Jwt: IJwt
         var token = tokenHandler.CreateToken(tokenDescriptor);
         return tokenHandler.WriteToken(token);
     }
+    
+    public object ValidateToken(string token)
+    {
+        var tokenHandler = new JwtSecurityTokenHandler();
+        var key = Encoding.UTF8.GetBytes(SecretKey!);
+        try
+        {
+            tokenHandler.ValidateToken(token, new TokenValidationParameters
+            {
+                ValidateIssuerSigningKey = true,
+                IssuerSigningKey = new SymmetricSecurityKey(key),
+                ValidateIssuer = true,
+                ValidateAudience = true,
+                ValidIssuer = Issuer,
+                ValidAudience = Audience,
+                ValidateLifetime = true,
+                ClockSkew = TimeSpan.Zero
+            }, out var validatedToken);
+            var jwtToken = (JwtSecurityToken) validatedToken;
+            var user = new
+            {
+                Id = jwtToken.Claims.First(x => x.Type == "Id").Value,
+                Email = jwtToken.Claims.First(x => x.Type == "Email").Value
+            };
+            return user;
+        }
+        catch
+        {
+            throw new Exception("Invalid token");
+        }
+    }
 }

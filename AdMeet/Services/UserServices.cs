@@ -28,4 +28,16 @@ public class UserServices(AppDbContext context, IJwt jwt) : IUserServices
         await context.SaveChangesAsync();
         return "OK";
     }
+    
+    public object GetInfo(string vJwt)
+    {
+        try
+        {
+            return jwt.ValidateToken(vJwt);
+        }
+        catch (Exception e)
+        {
+            throw new Exception(e.Message);
+        }
+    }
 }
