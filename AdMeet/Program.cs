@@ -50,6 +50,15 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 builder.Services.AddTransient<IJwt, Jwt>();
 builder.Services.AddScoped<IUserServices, UserServices>();
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAllOrigins", builder =>
+    {
+        builder.AllowAnyOrigin() // Reemplaza con el dominio permitido
+            .AllowAnyHeader()
+            .AllowAnyMethod();
+    });
+});
 
 var app = builder.Build();
 
@@ -66,6 +75,7 @@ app.UseHttpsRedirection();
 
 app.UseAuthentication(); // Habilitar la autenticación
 app.UseAuthorization(); //
+app.UseCors("AllowAllOrigins");
 
 app.MapControllers();
 
