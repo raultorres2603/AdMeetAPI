@@ -8,7 +8,7 @@ public class User
     {
         Id = Guid.NewGuid().ToString();
         Email = email;
-        Password = BCrypt.Net.BCrypt.EnhancedHashPassword(password);
+        Password = password;
     }
 
     [MaxLength(100)] public string Id { get; set; }
@@ -16,4 +16,9 @@ public class User
     [MaxLength(100)] public string? Email { get; set; }
 
     [MaxLength(2500)] public string? Password { get; set; }
+
+    public string HashPassword()
+    {
+        return BCrypt.Net.BCrypt.EnhancedHashPassword(Password);
+    }
 }

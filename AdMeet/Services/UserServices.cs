@@ -27,6 +27,7 @@ public class UserServices(AppDbContext context, IJwt jwt) : IUserServices
     {
         var uExist = await context.Users.FirstOrDefaultAsync(cU => cU.Email!.Equals(u.Email));
         if (uExist != null) return "UAE";
+        u.Password = u.HashPassword();
         await context.Users.AddAsync(u);
         await context.SaveChangesAsync();
         return "OK";
