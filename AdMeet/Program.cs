@@ -22,7 +22,6 @@ builder.Services.AddSwaggerGen();
 // Configurar JWT Settings
 builder.Services.Configure<Jwt>(builder.Configuration.GetSection("JwtSettings"));
 
-var jwtSettings = builder.Configuration.GetSection("JwtSettings").Get<Jwt>();
 var key = Encoding.UTF8.GetBytes(Environment.GetEnvironmentVariable("JWT_SK")!);
 
 builder.Services.AddAuthentication(options =>
