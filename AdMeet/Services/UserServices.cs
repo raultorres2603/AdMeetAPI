@@ -13,19 +13,35 @@ public class UserServices(AppDbContext context, IJwt jwt) : IUserServices
         var user = await context.Users.FirstOrDefaultAsync(u => u.Email == us.Email);
         if (user == null)
             return null;
-        if (!user.Password!.Equals(us.Password))
-            return null;
-        return jwt.GenerateToken(user);
+        if (BCrypt.Net.BCrypt.EnhancedVerify(us.Password, user.Password)) return jwt.GenerateToken(user);
+        Console.WriteLine($"Password incorrect {us.Password} {user.Password}");
+        return null;
     }
 
-    public async Task<List<User>> GetUsers() => await context.Users.ToListAsync();
+    public async Task<List<User>> GetUsers()
+    {
+        return await context.Users.ToListAsync();
+    }
 
     public async Task<string> Register(User u)
     {
         var uExist = await context.Users.FirstOrDefaultAsync(cU => cU.Email!.Equals(u.Email));
         if (uExist != null) return "UAE";
+        u.Password = u.HashPassword();
         await context.Users.AddAsync(u);
         await context.SaveChangesAsync();
         return "OK";
+    }
+
+    public object GetInfo(string vJwt)
+    {
+        try
+        {
+            return jwt.ValidateToken(vJwt);
+        }
+        catch (Exception e)
+        {
+            throw new Exception(e.Message);
+        }
     }
 }

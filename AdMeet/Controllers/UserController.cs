@@ -37,4 +37,17 @@ public class UserController(IUserServices userServices, ILogger<UserController> 
         if (result != "UAE") return Ok(result);
         return BadRequest("User already exists");
     }
+    [HttpGet("/{jwt}/get", Name = "GetInfo")]
+    [JwtAuth]
+    public IActionResult GetInfo([FromRoute] string jwt)
+    {
+        try
+        {
+            return Ok(userServices.GetInfo(jwt));
+        }
+        catch (Exception e)
+        {
+            return BadRequest(e.Message);
+        }
+    }
 }

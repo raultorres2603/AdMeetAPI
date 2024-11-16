@@ -15,5 +15,10 @@ public class User
 
     [MaxLength(100)] public string? Email { get; set; }
 
-    [MaxLength(100)] public string? Password { get; set; }
+    [MaxLength(500)] public string? Password { get; set; }
+
+    public string HashPassword()
+    {
+        return BCrypt.Net.BCrypt.EnhancedHashPassword(Password);
+    }
 }

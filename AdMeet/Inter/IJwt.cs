@@ -9,4 +9,5 @@ public interface IJwt
     public string Audience { get; set; }
     public int ExpiresInMinutes { get; set; }
     public string GenerateToken(User u);
+    public object ValidateToken(string token);
 }
