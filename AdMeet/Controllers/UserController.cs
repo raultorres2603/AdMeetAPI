@@ -12,7 +12,7 @@ namespace AdMeet.Controllers;
 [TypeFilter(typeof(Tracker))]
 public class UserController(IUserServices userServices, ILogger<UserController> logger) : ControllerBase
 {
-    [HttpPost("login", Name = "Login")]
+    [HttpPost("login/", Name = "Login")]
     public async Task<IActionResult> Login([FromBody] User user)
     {
         var token = await userServices.LogIn(user);
@@ -25,11 +25,11 @@ public class UserController(IUserServices userServices, ILogger<UserController> 
     public async Task<IActionResult> GetUsers([FromRoute] string jwt)
     {
         logger.LogInformation($"Retrieving users: {jwt}");
-        List<User> users = await userServices.GetUsers();
+        var users = await userServices.GetUsers();
         logger.LogInformation($"Done retrieving users: {jwt}");
         return Ok(users);
     }
-    
+
     [HttpPost("register", Name = "Register")]
     public async Task<IActionResult> Register([FromBody] User user)
     {
@@ -37,7 +37,8 @@ public class UserController(IUserServices userServices, ILogger<UserController> 
         if (result != "UAE") return Ok(result);
         return BadRequest("User already exists");
     }
-    [HttpGet("/{jwt}/get", Name = "GetInfo")]
+
+    [HttpGet("{jwt}/get", Name = "GetInfo")]
     [JwtAuth]
     public IActionResult GetInfo([FromRoute] string jwt)
     {

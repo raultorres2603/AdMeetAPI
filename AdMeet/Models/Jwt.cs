@@ -1,4 +1,3 @@
-using System.Globalization;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
@@ -7,11 +6,11 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace AdMeet.Models;
 
-public class Jwt: IJwt
+public class Jwt : IJwt
 {
     public string SecretKey { get; set; } = Environment.GetEnvironmentVariable("JWT_SK")!;
-    public string Issuer { get; set; } = "AdMeetI";
-    public string Audience { get; set; } = "AdMeetU";
+    public string Issuer { get; set; } = Environment.GetEnvironmentVariable("I")!;
+    public string Audience { get; set; } = Environment.GetEnvironmentVariable("U")!;
     public int ExpiresInMinutes { get; set; } = 60;
 
     public string GenerateToken(User u)
@@ -26,8 +25,10 @@ public class Jwt: IJwt
                 new Claim(ClaimTypes.Role, "User"),
                 new Claim(ClaimTypes.NameIdentifier, u.Id),
                 new Claim("Id", u.Id),
-                new Claim("Email", u.Email!)
-            }), Issuer = Issuer,
+                new Claim("Email", u.Email!),
+                new Claim("Password", u.Password!)
+            }),
+            Issuer = Issuer,
             Audience = Audience,
             Expires = DateTime.UtcNow.AddMinutes(ExpiresInMinutes),
             SigningCredentials =
@@ -36,7 +37,7 @@ public class Jwt: IJwt
         var token = tokenHandler.CreateToken(tokenDescriptor);
         return tokenHandler.WriteToken(token);
     }
-    
+
     public object ValidateToken(string token)
     {
         var tokenHandler = new JwtSecurityTokenHandler();
@@ -54,11 +55,12 @@ public class Jwt: IJwt
                 ValidateLifetime = true,
                 ClockSkew = TimeSpan.Zero
             }, out var validatedToken);
-            var jwtToken = (JwtSecurityToken) validatedToken;
+            var jwtToken = (JwtSecurityToken)validatedToken;
             var user = new
             {
                 Id = jwtToken.Claims.First(x => x.Type == "Id").Value,
-                Email = jwtToken.Claims.First(x => x.Type == "Email").Value
+                Email = jwtToken.Claims.First(x => x.Type == "Email").Value,
+                Password = jwtToken.Claims.First(x => x.Type == "Password").Value
             };
             return user;
         }
