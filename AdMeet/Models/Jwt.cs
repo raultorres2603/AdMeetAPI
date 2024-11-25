@@ -26,7 +26,12 @@ public class Jwt : IJwt
                 new Claim(ClaimTypes.NameIdentifier, u.Id),
                 new Claim("Id", u.Id),
                 new Claim("Email", u.Email!),
-                new Claim("Password", u.Password!)
+                new Claim("Password", u.Password!),
+                new Claim("Name", u.Profile.Name),
+                new Claim("LastName", u.Profile.LastName),
+                new Claim("City", u.Profile.City),
+                new Claim("Country", u.Profile.Country),
+                new Claim("ZipCode", u.Profile.ZipCode)
             }),
             Issuer = Issuer,
             Audience = Audience,
@@ -60,7 +65,12 @@ public class Jwt : IJwt
             {
                 Id = jwtToken.Claims.First(x => x.Type == "Id").Value,
                 Email = jwtToken.Claims.First(x => x.Type == "Email").Value,
-                Password = jwtToken.Claims.First(x => x.Type == "Password").Value
+                Password = jwtToken.Claims.First(x => x.Type == "Password").Value,
+                Name = jwtToken.Claims.First(x => x.Type == "Name").Value,
+                LastName = jwtToken.Claims.First(x => x.Type == "LastName").Value,
+                City = jwtToken.Claims.First(x => x.Type == "City").Value,
+                Country = jwtToken.Claims.First(x => x.Type == "Country").Value,
+                ZipCode = jwtToken.Claims.First(x => x.Type == "ZipCode").Value
             };
             return user;
         }
