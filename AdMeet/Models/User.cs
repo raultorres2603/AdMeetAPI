@@ -12,7 +12,7 @@ public class User
         Profile = new Profile(Id);
     }
 
-    [MaxLength(100)] public string Id { get; set; }
+    [MaxLength(100)] [Key] public string Id { get; set; }
 
     [MaxLength(100)] public string? Email { get; set; }
 

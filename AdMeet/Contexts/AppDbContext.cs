@@ -7,6 +7,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
 {
     // Define tus DbSets (tablas)
     public DbSet<User> Users { get; set; }
+    public DbSet<Profile> Profile { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

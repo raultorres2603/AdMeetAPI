@@ -10,7 +10,7 @@ public class UserServices(AppDbContext context, IJwt jwt) : IUserServices
     public async Task<string?> LogIn(User us)
     {
         // We check if user exists
-        var user = await context.Users.FirstOrDefaultAsync(u => u.Email == us.Email);
+        var user = await context.Users.Include(user => user.Profile).FirstOrDefaultAsync(u => u.Email == us.Email);
         if (user == null)
             return null;
         if (BCrypt.Net.BCrypt.EnhancedVerify(us.Password, user.Password)) return jwt.GenerateToken(user);
