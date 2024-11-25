@@ -9,7 +9,7 @@ public class User
         Id = Guid.NewGuid().ToString();
         Email = email;
         Password = password;
-        Profile = new Profile();
+        Profile = new Profile(Id);
     }
 
     [MaxLength(100)] public string Id { get; set; }

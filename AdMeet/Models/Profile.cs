@@ -4,8 +4,9 @@ namespace AdMeet.Models;
 
 public class Profile
 {
-    public Profile()
+    public Profile(string idUser)
     {
+        IdUser = idUser;
         City = "";
         Country = "";
         LastName = "";
@@ -13,6 +14,7 @@ public class Profile
         ZipCode = "";
     }
 
+    [Key] [MaxLength(100)] public string IdUser { get; set; }
     [MaxLength(100)] public string City { get; set; }
     [MaxLength(50)] public string Country { get; set; }
     [MaxLength(100)] public string LastName { get; set; }
