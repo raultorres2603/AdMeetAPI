@@ -9,6 +9,7 @@ public class User
         Id = Guid.NewGuid().ToString();
         Email = email;
         Password = password;
+        Profile = new Profile();
     }
 
     [MaxLength(100)] public string Id { get; set; }
@@ -16,6 +17,8 @@ public class User
     [MaxLength(100)] public string? Email { get; set; }
 
     [MaxLength(500)] public string? Password { get; set; }
+
+    public Profile Profile { get; set; }
 
     public string HashPassword()
     {
