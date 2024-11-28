@@ -38,7 +38,7 @@ public class UserServices(AppDbContext context, IJwt jwt) : IUserServices
         try
         {
             var user = jwt.DecodeToken(vJwt);
-            user = await GetUser(user.Email);
+            user = await GetUser(user.Email!);
             var newTok = jwt.GenerateToken(user);
             if (newTok == "") throw new Exception("Token not validated");
             Console.WriteLine(newTok, user);
