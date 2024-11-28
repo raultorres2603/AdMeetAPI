@@ -7,5 +7,5 @@ public interface IUserServices
     Task<string?> LogIn(User us);
     Task<string> Register(User u);
     Task<List<User>> GetUsers();
-    object GetInfo(string vJwt);
+    Task<(User, string)> GetInfo(string vJwt);
 }

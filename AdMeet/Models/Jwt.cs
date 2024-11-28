@@ -43,7 +43,7 @@ public class Jwt : IJwt
         return tokenHandler.WriteToken(token);
     }
 
-    public object ValidateToken(string token)
+    private bool ValToken(string token)
     {
         var tokenHandler = new JwtSecurityTokenHandler();
         var key = Encoding.UTF8.GetBytes(SecretKey!);
@@ -60,23 +60,47 @@ public class Jwt : IJwt
                 ValidateLifetime = true,
                 ClockSkew = TimeSpan.Zero
             }, out var validatedToken);
-            var jwtToken = (JwtSecurityToken)validatedToken;
-            var user = new
-            {
-                Id = jwtToken.Claims.First(x => x.Type == "Id").Value,
-                Email = jwtToken.Claims.First(x => x.Type == "Email").Value,
-                Password = jwtToken.Claims.First(x => x.Type == "Password").Value,
-                Name = jwtToken.Claims.First(x => x.Type == "Name").Value,
-                LastName = jwtToken.Claims.First(x => x.Type == "LastName").Value,
-                City = jwtToken.Claims.First(x => x.Type == "City").Value,
-                Country = jwtToken.Claims.First(x => x.Type == "Country").Value,
-                ZipCode = jwtToken.Claims.First(x => x.Type == "ZipCode").Value
-            };
-            return user;
+            return true;
         }
         catch
         {
-            throw new Exception("Invalid token");
+            return false;
+        }
+    }
+
+    public User DecodeToken(string token)
+    {
+        var tokenValidated = ValToken(token);
+
+        if (!tokenValidated) throw new Exception("Token not validated");
+
+        // Decode token to get user info
+        var tokenHandler = new JwtSecurityTokenHandler();
+        var key = Encoding.UTF8.GetBytes(SecretKey!);
+        try
+        {
+            var tokenDescriptor = tokenHandler.ReadJwtToken(token);
+            var userId = tokenDescriptor.Claims.FirstOrDefault(c => c.Type == "Id")!.Value;
+            var email = tokenDescriptor.Claims.FirstOrDefault(c => c.Type == "Email")!.Value;
+            var password = tokenDescriptor.Claims.FirstOrDefault(c => c.Type == "Password")!.Value;
+            var name = tokenDescriptor.Claims.FirstOrDefault(c => c.Type == "Name")?.Value;
+            var lastName = tokenDescriptor.Claims.FirstOrDefault(c => c.Type == "LastName")?.Value;
+            var city = tokenDescriptor.Claims.FirstOrDefault(c => c.Type == "City")?.Value;
+            var country = tokenDescriptor.Claims.FirstOrDefault(c => c.Type == "Country")?.Value;
+            var zipCode = tokenDescriptor.Claims.FirstOrDefault(c => c.Type == "ZipCode")?.Value;
+
+            var u = new User(email, password);
+            u.Id = userId;
+            if (name != null) u.Profile.Name = name;
+            if (lastName != null) u.Profile.LastName = lastName;
+            if (city != null) u.Profile.City = city;
+            if (country != null) u.Profile.Country = country;
+            if (zipCode != null) u.Profile.ZipCode = zipCode;
+            return u;
+        }
+        catch (Exception e)
+        {
+            throw new Exception(e.Message);
         }
     }
 }

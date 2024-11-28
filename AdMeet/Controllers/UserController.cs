@@ -40,11 +40,16 @@ public class UserController(IUserServices userServices, ILogger<UserController> 
 
     [HttpGet("{jwt}/get", Name = "GetInfo")]
     [JwtAuth]
-    public IActionResult GetInfo([FromRoute] string jwt)
+    public async Task<IActionResult> GetInfo([FromRoute] string jwt)
     {
         try
         {
-            return Ok(userServices.GetInfo(jwt));
+            var (user, newTok) = await userServices.GetInfo(jwt);
+            return Ok(new
+            {
+                user,
+                newTok
+            });
         }
         catch (Exception e)
         {
