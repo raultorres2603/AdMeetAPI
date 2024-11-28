@@ -33,15 +33,27 @@ public class UserServices(AppDbContext context, IJwt jwt) : IUserServices
         return "OK";
     }
 
-    public object GetInfo(string vJwt)
+    public async Task<(User, string)> GetInfo(string vJwt)
     {
         try
         {
-            return jwt.ValidateToken(vJwt);
+            var user = jwt.DecodeToken(vJwt);
+            user = await GetUser(user.Email);
+            var newTok = jwt.GenerateToken(user);
+            if (newTok == "") throw new Exception("Token not validated");
+            Console.WriteLine(newTok, user);
+            return (user, newTok);
         }
         catch (Exception e)
         {
             throw new Exception(e.Message);
         }
+    }
+
+    public async Task<User> GetUser(string email)
+    {
+        var user = await context.Users.Include(user => user.Profile).FirstOrDefaultAsync(u => u.Email == email);
+        if (user == null) throw new Exception("User not found");
+        return user;
     }
 }
