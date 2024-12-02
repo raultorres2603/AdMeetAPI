@@ -56,4 +56,31 @@ public class UserServices(AppDbContext context, IJwt jwt) : IUserServices
         if (user == null) throw new Exception("User not found");
         return user;
     }
+
+    public async Task<string> UpdateProf(User u)
+    {
+        try
+        {
+            var user = await context.Users.Include(user => user.Profile).FirstOrDefaultAsync(u => u.Email == u.Email);
+            if (user == null) throw new Exception("User not found");
+            user.Profile.Name = u.Profile.Name;
+            user.Profile.LastName = u.Profile.LastName;
+            user.Profile.City = u.Profile.City;
+            user.Profile.Country = u.Profile.Country;
+            user.Profile.ZipCode = u.Profile.ZipCode;
+            try
+            {
+                await context.SaveChangesAsync();
+                return "OK";
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message);
+            }
+        }
+        catch (Exception e)
+        {
+            throw new Exception(e.Message);
+        }
+    }
 }

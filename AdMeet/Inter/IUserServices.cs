@@ -8,4 +8,5 @@ public interface IUserServices
     Task<string> Register(User u);
     Task<List<User>> GetUsers();
     Task<(User, string)> GetInfo(string vJwt);
+    Task<string> UpdateProf(User u);
 }

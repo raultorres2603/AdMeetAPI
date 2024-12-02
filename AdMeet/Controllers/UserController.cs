@@ -56,4 +56,20 @@ public class UserController(IUserServices userServices, ILogger<UserController> 
             return BadRequest(e.Message);
         }
     }
+
+    // Create an enpoint, put endpoint, to update profile
+    [HttpPut("{jwt}/update", Name = "UpdateProfile")]
+    [JwtAuth]
+    public async Task<IActionResult> UpdateProfile([FromRoute] string jwt, [FromBody] User u)
+    {
+        try
+        {
+            var result = await userServices.UpdateProf(u);
+            return Ok(result);
+        }
+        catch (Exception e)
+        {
+            return BadRequest(e.Message);
+        }
+    }
 }
