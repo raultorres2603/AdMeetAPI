@@ -8,7 +8,11 @@ public class Profile(
     string country = "",
     string lastName = "",
     string name = "",
-    string zipCode = "")
+    string zipCode = "",
+    DateOnly birthday = new(),
+    string gender = "",
+    string preferences = ""
+)
 {
     [Key] [MaxLength(100)] public string IdUser { get; set; } = idUser;
     [MaxLength(100)] public string City { get; set; } = city;
@@ -16,4 +20,10 @@ public class Profile(
     [MaxLength(100)] public string LastName { get; set; } = lastName;
     [MaxLength(50)] public string Name { get; set; } = name;
     [MaxLength(10)] public string ZipCode { get; set; } = zipCode;
+
+    public DateOnly Birthday { get; set; } = birthday;
+
+    [MaxLength(1)] public string Gender { get; set; } = gender;
+
+    [MaxLength(100)] public string Preferences { get; set; } = preferences;
 }
