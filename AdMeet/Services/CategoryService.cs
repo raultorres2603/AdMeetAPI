@@ -22,4 +22,23 @@ public class CategoryService(AppDbContext context, ILogger<ICategoryService> log
             throw new Exception(e.Message);
         }
     }
+
+    // Create a new category
+    public async Task<string> CreateCategory(Category c)
+    {
+        try
+        {
+            logger.LogInformation("Creating category");
+            await context.Category.AddAsync(c);
+            await context.SaveChangesAsync();
+            logger.LogInformation("Done creating category");
+            return "OK";
+        }
+        catch (Exception e)
+        {
+            logger.LogError(e.Message);
+            Console.WriteLine(e);
+            throw new Exception(e.Message);
+        }
+    }
 }

@@ -1,5 +1,6 @@
 using AdMeet.Attributes;
 using AdMeet.Inter;
+using AdMeet.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AdMeet.Controllers;
@@ -20,6 +21,24 @@ public class CategoryController(ICategoryService categoryServices, ILogger<ICate
             var categories = await categoryServices.GetCategories();
             logger.LogInformation("Done getting categories");
             return Ok(categories);
+        }
+        catch (Exception e)
+        {
+            logger.LogError(e.Message);
+            return BadRequest(e.Message);
+        }
+    }
+
+    // Create a new category
+    [HttpPost("create", Name = "CreateCategory")]
+    public async Task<IActionResult> CreateCategory([FromBody] Category c)
+    {
+        logger.LogInformation("Creating category");
+        try
+        {
+            await categoryServices.CreateCategory(c);
+            logger.LogInformation("Done creating category");
+            return Ok();
         }
         catch (Exception e)
         {
