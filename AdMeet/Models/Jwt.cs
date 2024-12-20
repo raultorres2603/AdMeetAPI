@@ -6,7 +6,7 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace AdMeet.Models;
 
-public class Jwt : IJwt
+public class Jwt(ILogger<IJwt> logger) : IJwt
 {
     public string SecretKey { get; set; } = Environment.GetEnvironmentVariable("JWT_SK")!;
     public string Issuer { get; set; } = Environment.GetEnvironmentVariable("I")!;
@@ -15,6 +15,7 @@ public class Jwt : IJwt
 
     public string GenerateToken(User u)
     {
+        logger.LogInformation("Generating token");
         var tokenHandler = new JwtSecurityTokenHandler();
         var key = Encoding.UTF8.GetBytes(SecretKey!);
         var tokenDescriptor = new SecurityTokenDescriptor
@@ -43,11 +44,13 @@ public class Jwt : IJwt
                 new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
         };
         var token = tokenHandler.CreateToken(tokenDescriptor);
+        logger.LogInformation("Done generating token");
         return tokenHandler.WriteToken(token);
     }
 
     public User DecodeToken(string token)
     {
+        logger.LogInformation("Decoding token");
         var tokenValidated = ValToken(token);
 
         if (!tokenValidated) throw new Exception("Token not validated");
@@ -70,6 +73,7 @@ public class Jwt : IJwt
             var birthday = tokenDescriptor.Claims.FirstOrDefault(c => c.Type == "Birthday")?.Value;
             var preferences = tokenDescriptor.Claims.FirstOrDefault(c => c.Type == "Preferences")?.Value;
 
+            logger.LogInformation("Done decoding token");
             var u = new User(email, password);
             u.Id = userId;
             if (name != null) u.Profile.Name = name;
@@ -84,12 +88,14 @@ public class Jwt : IJwt
         }
         catch (Exception e)
         {
+            logger.LogError(e, "Error decoding token");
             throw new Exception(e.Message);
         }
     }
 
     private bool ValToken(string token)
     {
+        logger.LogInformation("Validating token");
         var tokenHandler = new JwtSecurityTokenHandler();
         var key = Encoding.UTF8.GetBytes(SecretKey!);
         try
@@ -105,10 +111,12 @@ public class Jwt : IJwt
                 ValidateLifetime = true,
                 ClockSkew = TimeSpan.Zero
             }, out var validatedToken);
+            logger.LogInformation("Done validating token");
             return true;
         }
         catch
         {
+            logger.LogError("Error validating token");
             return false;
         }
     }

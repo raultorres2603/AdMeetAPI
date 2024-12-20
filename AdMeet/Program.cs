@@ -42,11 +42,19 @@ builder.Services.AddAuthentication(options =>
             IssuerSigningKey = new SymmetricSecurityKey(key)
         };
     });
+
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseMySql(Environment.GetEnvironmentVariable("MYSQL_CONN"),
         ServerVersion.AutoDetect(Environment.GetEnvironmentVariable("MYSQL_CONN"))));
 
+builder.Services.AddLogging(loggingBuilder =>
+{
+    loggingBuilder.AddConsole();
+    loggingBuilder.AddDebug();
+});
+
 builder.Services.AddTransient<IJwt, Jwt>();
+builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<IUserServices, UserServices>();
 
 builder.Services.AddCors(options =>
