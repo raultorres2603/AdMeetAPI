@@ -8,6 +8,7 @@ namespace AdMeet.Controllers;
 [ApiController]
 [Route("/api/category")]
 [TypeFilter(typeof(Tracker))]
+[JwtAuth]
 public class CategoryController(ICategoryService categoryServices, ILogger<ICategoryService> logger) : ControllerBase
 {
     // Get all categories
