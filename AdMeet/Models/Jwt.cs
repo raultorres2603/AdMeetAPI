@@ -6,7 +6,7 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace AdMeet.Models;
 
-public class Jwt(Logger<Jwt> logger) : IJwt
+public class Jwt(ILogger<IJwt> logger) : IJwt
 {
     public string SecretKey { get; set; } = Environment.GetEnvironmentVariable("JWT_SK")!;
     public string Issuer { get; set; } = Environment.GetEnvironmentVariable("I")!;

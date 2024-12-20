@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace AdMeet.Services;
 
-public class UserServices(AppDbContext context, IJwt jwt, Logger<UserServices> logger) : IUserServices
+public class UserServices(AppDbContext context, IJwt jwt, ILogger<IUserServices> logger) : IUserServices
 {
     public async Task<string?> LogIn(User us)
     {
