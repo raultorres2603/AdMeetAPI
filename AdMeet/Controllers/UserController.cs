@@ -20,7 +20,7 @@ public class UserController(IUserServices userServices, ILogger<UserController> 
         return Ok(token);
     }
 
-    [HttpGet("{jwt}/all", Name = "GetUsers")]
+    [HttpGet("all", Name = "GetUsers")]
     [JwtAuth]
     public async Task<IActionResult> GetUsers([FromRoute] string jwt)
     {
@@ -58,9 +58,9 @@ public class UserController(IUserServices userServices, ILogger<UserController> 
     }
 
     // Create an enpoint, put endpoint, to update profile
-    [HttpPut("{jwt}/update", Name = "UpdateProfile")]
+    [HttpPut("update", Name = "UpdateProfile")]
     [JwtAuth]
-    public async Task<IActionResult> UpdateProfile([FromRoute] string jwt, [FromBody] User u)
+    public async Task<IActionResult> UpdateProfile([FromBody] User u)
     {
         try
         {
