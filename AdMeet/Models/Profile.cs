@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace AdMeet.Models;
 
@@ -14,7 +15,11 @@ public class Profile(
     string preferences = ""
 )
 {
-    [Key] [MaxLength(100)] public string IdUser { get; set; } = idUser;
+    [ForeignKey("IdUser")]
+    [Key]
+    [MaxLength(100)]
+    public string IdUser { get; set; } = idUser;
+
     [MaxLength(100)] public string City { get; set; } = city;
     [MaxLength(50)] public string Country { get; set; } = country;
     [MaxLength(100)] public string LastName { get; set; } = lastName;

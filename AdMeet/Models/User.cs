@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace AdMeet.Models;
 
@@ -12,7 +13,10 @@ public class User
         Profile = new Profile(Id);
     }
 
-    [MaxLength(100)] [Key] public string Id { get; set; }
+    [MaxLength(100)]
+    [Key]
+    [ForeignKey("Profile")]
+    public string Id { get; set; }
 
     [MaxLength(100)] public string? Email { get; set; }
 
