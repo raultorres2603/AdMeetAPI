@@ -24,6 +24,8 @@ public class User
 
     public Profile Profile { get; set; }
 
+    public bool IsAdmin { get; set; } = false;
+
     public string HashPassword()
     {
         return BCrypt.Net.BCrypt.EnhancedHashPassword(Password);
