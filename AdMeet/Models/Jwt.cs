@@ -35,7 +35,8 @@ public class Jwt(ILogger<IJwt> logger) : IJwt
                 new Claim("ZipCode", u.Profile.ZipCode),
                 new Claim("Gender", u.Profile.Gender),
                 new Claim("Birthday", u.Profile.Birthday.ToString()),
-                new Claim("Preferences", u.Profile.Preferences)
+                new Claim("Preferences", u.Profile.Preferences),
+                new Claim("IsAdmin", u.IsAdmin.ToString())
             }),
             Issuer = Issuer,
             Audience = Audience,
@@ -72,6 +73,7 @@ public class Jwt(ILogger<IJwt> logger) : IJwt
             var gender = tokenDescriptor.Claims.FirstOrDefault(c => c.Type == "Gender")?.Value;
             var birthday = tokenDescriptor.Claims.FirstOrDefault(c => c.Type == "Birthday")?.Value;
             var preferences = tokenDescriptor.Claims.FirstOrDefault(c => c.Type == "Preferences")?.Value;
+            var isAdmin = tokenDescriptor.Claims.FirstOrDefault(c => c.Type == "IsAdmin")?.Value;
 
             logger.LogInformation("Done decoding token");
             var u = new User(email, password);
@@ -84,6 +86,7 @@ public class Jwt(ILogger<IJwt> logger) : IJwt
             if (gender != null) u.Profile.Gender = gender;
             if (birthday != null) u.Profile.Birthday = DateOnly.Parse(birthday);
             if (preferences != null) u.Profile.Preferences = preferences;
+            if (isAdmin != null) u.IsAdmin = bool.Parse(isAdmin);
             return u;
         }
         catch (Exception e)
