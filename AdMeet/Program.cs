@@ -56,6 +56,7 @@ builder.Services.AddLogging(loggingBuilder =>
 builder.Services.AddTransient<IJwt, Jwt>();
 builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<IUserServices, UserServices>();
+builder.Services.AddScoped<IKpiService, KpiService>();
 
 builder.Services.AddCors(options =>
 {
