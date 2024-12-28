@@ -10,27 +10,11 @@ public class KpiService(AppDbContext dbContext, ILogger<KpiService> logger) : IK
     {
         // Get users logedIn from DB grouped by date
         logger.LogInformation("Picking users logedIn from DB grouped by date");
-        var usersLogedIn = dbContext.Kpi
-            .Where(kpi => kpi.EndPoint == "/api/user/login") // Filtro por campo
-            .GroupBy(kpi => DateOnly.FromDateTime(kpi.EnteredOn)) // Agrupamiento
-            .Select(kpiGroup => new
-            {
-                Date = kpiGroup.Key,
-                TotalUsersLogedIn = kpiGroup.Count()
-            })
-            .ToList();
+        var usersLogedIn = GetUsersLogedIn();
 
         // Get users registered from DB grouped by date
         logger.LogInformation("Picking users registered from DB grouped by date");
-        var usersRegistered = dbContext.Kpi
-            .Where(kpi => kpi.EndPoint == "/api/user/register") // Filtro por campo
-            .GroupBy(kpi => DateOnly.FromDateTime(kpi.EnteredOn)) // Agrupamiento
-            .Select(kpiGroup => new
-            {
-                Date = kpiGroup.Key,
-                TotalUsersRegistered = kpiGroup.Count()
-            })
-            .ToList();
+        var usersRegistered = GetUsersRegistered();
         // Return all KPI's data
         logger.LogInformation("Returning all KPI's data");
         return new KpiUsageData(usersLogedIn, usersRegistered);
@@ -53,5 +37,33 @@ public class KpiService(AppDbContext dbContext, ILogger<KpiService> logger) : IK
             logger.LogError("Couldn't save {KPI} KPI on DB. Error message: {eMessage}", kpi.ToString(), e.Message);
             return false;
         }
+    }
+
+    private List<UsersLogedIn> GetUsersLogedIn()
+    {
+        var usersLogedIn = dbContext.Kpi
+            .Where(kpi => kpi.EndPoint == "/api/user/login") // Filtro por campo
+            .GroupBy(kpi => DateOnly.FromDateTime(kpi.EnteredOn)) // Agrupamiento
+            .Select(kpiGroup => new UsersLogedIn
+            {
+                Date = kpiGroup.Key,
+                TotalUsersLogedIn = kpiGroup.Count()
+            })
+            .ToList();
+        return usersLogedIn;
+    }
+
+    private List<UsersRegistered> GetUsersRegistered()
+    {
+        var usersRegistered = dbContext.Kpi
+            .Where(kpi => kpi.EndPoint == "/api/user/register") // Filtro por campo
+            .GroupBy(kpi => DateOnly.FromDateTime(kpi.EnteredOn)) // Agrupamiento
+            .Select(kpiGroup => new UsersRegistered
+            {
+                Date = kpiGroup.Key,
+                TotalUsersRegistered = kpiGroup.Count()
+            })
+            .ToList();
+        return usersRegistered;
     }
 }
