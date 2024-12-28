@@ -4,6 +4,6 @@ namespace AdMeet.Inter;
 
 public interface IKpiService
 {
-    public Task<object> GetAllKpi();
+    public IKpiUsageData GetAllKpi();
     public bool InsertKpi(Kpi kpi);
 }

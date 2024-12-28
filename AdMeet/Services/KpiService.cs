@@ -6,9 +6,34 @@ namespace AdMeet.Services;
 
 public class KpiService(AppDbContext dbContext, ILogger<KpiService> logger) : IKpiService
 {
-    public Task<object> GetAllKpi()
+    public IKpiUsageData GetAllKpi()
     {
-        throw new NotImplementedException();
+        // Get users logedIn from DB grouped by date
+        logger.LogInformation("Picking users logedIn from DB grouped by date");
+        var usersLogedIn = dbContext.Kpi
+            .Where(kpi => kpi.EndPoint == "/api/user/login") // Filtro por campo
+            .GroupBy(kpi => DateOnly.FromDateTime(kpi.EnteredOn)) // Agrupamiento
+            .Select(kpiGroup => new
+            {
+                Date = kpiGroup.Key,
+                TotalUsersLogedIn = kpiGroup.Count()
+            })
+            .ToList();
+
+        // Get users registered from DB grouped by date
+        logger.LogInformation("Picking users registered from DB grouped by date");
+        var usersRegistered = dbContext.Kpi
+            .Where(kpi => kpi.EndPoint == "/api/user/register") // Filtro por campo
+            .GroupBy(kpi => DateOnly.FromDateTime(kpi.EnteredOn)) // Agrupamiento
+            .Select(kpiGroup => new
+            {
+                Date = kpiGroup.Key,
+                TotalUsersRegistered = kpiGroup.Count()
+            })
+            .ToList();
+        // Return all KPI's data
+        logger.LogInformation("Returning all KPI's data");
+        return new KpiUsageData(usersLogedIn, usersRegistered);
     }
 
     public bool InsertKpi(Kpi kpi)

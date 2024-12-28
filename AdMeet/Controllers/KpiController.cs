@@ -8,12 +8,13 @@ namespace AdMeet.Controllers;
 [AdminAuth]
 [Produces("application/json")]
 [Route("api/admin")]
-public class KpiController(IKpiService kpiService) : ControllerBase
+public class KpiController(IKpiService kpiService, ILogger<KpiController> logger) : ControllerBase
 {
     // Get all KPI data from DB
     [HttpGet("kpi", Name = "GetKpi")]
     public IActionResult GetKpi()
     {
-        return Ok();
+        logger.LogInformation("Access on {controller} {action}", nameof(KpiController), nameof(GetKpi));
+        return Ok(kpiService.GetAllKpi());
     }
 }
