@@ -1,6 +1,7 @@
 using AdMeet.Contexts;
 using AdMeet.Inter;
 using AdMeet.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace AdMeet.Services;
 
@@ -15,9 +16,12 @@ public class KpiService(AppDbContext dbContext, ILogger<KpiService> logger) : IK
         // Get users registered from DB grouped by date
         logger.LogInformation("Picking users registered from DB grouped by date");
         var usersRegistered = GetUsersRegistered();
+        // Get users from different country from DB grouped by country
+        logger.LogInformation("Picking users from different country from DB grouped by country");
+        var usersFromDifferentCountry = GetUsersFromDiffCountry();
         // Return all KPI's data
         logger.LogInformation("Returning all KPI's data");
-        return new KpiUsageData(usersLogedIn, usersRegistered);
+        return new KpiUsageData(usersLogedIn, usersRegistered, usersFromDifferentCountry);
     }
 
     public bool InsertKpi(Kpi kpi)
@@ -65,5 +69,16 @@ public class KpiService(AppDbContext dbContext, ILogger<KpiService> logger) : IK
             })
             .ToList();
         return usersRegistered;
+    }
+
+    private List<UsersFromDiffCountry> GetUsersFromDiffCountry()
+    {
+        var usersFromDiffCountry = dbContext.Users.Include(u => u.Profile).GroupBy(u => u.Profile.Country).Select(
+            group => new UsersFromDiffCountry
+            {
+                Country = group.Key,
+                TotalUsers = group.Count()
+            }).ToList();
+        return usersFromDiffCountry;
     }
 }
