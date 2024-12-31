@@ -43,6 +43,26 @@ public class KpiService(AppDbContext dbContext, ILogger<KpiService> logger) : IK
         }
     }
 
+    public List<User> GetUsersFromDiffCountry(string country)
+    {
+        try
+        {
+            logger.LogInformation("Picking users from {Country} from DB grouped by country", country);
+            var usersFromDiffCountry =
+                dbContext.Users.Include(u => u.Profile).Where(u => u.Profile.Country == country).ToList();
+            // Quit password from users
+            logger.LogInformation("Quitting password from users");
+            usersFromDiffCountry.ForEach(u => u.Password = "********");
+            logger.LogInformation("Done picking users from {Country} from DB grouped by country", country);
+            return usersFromDiffCountry;
+        }
+        catch (Exception e)
+        {
+            logger.LogError(e.Message);
+            throw new Exception(e.Message);
+        }
+    }
+
     private List<UsersLogedIn> GetUsersLogedIn()
     {
         var usersLogedIn = dbContext.Kpi
