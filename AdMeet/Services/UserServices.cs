@@ -83,7 +83,7 @@ public class UserServices(AppDbContext context, IJwt jwt, ILogger<IUserServices>
         try
         {
             logger.LogInformation($"Updating profile {u.Email}");
-            var user = await context.Users.Include(user => user.Profile).FirstOrDefaultAsync(u => u.Email == u.Email);
+            var user = await context.Users.Include(us => us.Profile).FirstOrDefaultAsync(us => u.Email == us.Email);
             if (user == null)
             {
                 logger.LogError("User not found");
