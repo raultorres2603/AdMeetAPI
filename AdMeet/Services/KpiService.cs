@@ -65,8 +65,10 @@ public class KpiService(AppDbContext dbContext, ILogger<KpiService> logger) : IK
 
     private List<UsersLogedIn> GetUsersLogedIn()
     {
+        // Get users logedIn from DB grouped by date and max 1 month
         var usersLogedIn = dbContext.Kpi
-            .Where(kpi => kpi.EndPoint == "/api/user/login") // Filtro por campo
+            .Where(kpi =>
+                kpi.EndPoint == "/api/user/login" && kpi.EnteredOn > DateTime.Now.AddMonths(-1)) // Filtro por campo
             .GroupBy(kpi => DateOnly.FromDateTime(kpi.EnteredOn)) // Agrupamiento
             .Select(kpiGroup => new UsersLogedIn
             {
@@ -80,7 +82,8 @@ public class KpiService(AppDbContext dbContext, ILogger<KpiService> logger) : IK
     private List<UsersRegistered> GetUsersRegistered()
     {
         var usersRegistered = dbContext.Kpi
-            .Where(kpi => kpi.EndPoint == "/api/user/register") // Filtro por campo
+            .Where(kpi =>
+                kpi.EndPoint == "/api/user/register" && kpi.EnteredOn > DateTime.Now.AddMonths(-1)) // Filtro por campo
             .GroupBy(kpi => DateOnly.FromDateTime(kpi.EnteredOn)) // Agrupamiento
             .Select(kpiGroup => new UsersRegistered
             {
