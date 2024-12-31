@@ -1,5 +1,4 @@
 using System.Text;
-using AdMeet.Attributes;
 using AdMeet.Contexts;
 using AdMeet.Inter;
 using AdMeet.Models;
@@ -14,7 +13,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-builder.Services.AddControllers(options => { options.Filters.Add<Tracker>(); });
+builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -56,6 +55,7 @@ builder.Services.AddLogging(loggingBuilder =>
 builder.Services.AddTransient<IJwt, Jwt>();
 builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<IUserServices, UserServices>();
+builder.Services.AddScoped<IKpiService, KpiService>();
 
 builder.Services.AddCors(options =>
 {

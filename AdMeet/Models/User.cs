@@ -5,7 +5,7 @@ namespace AdMeet.Models;
 
 public class User
 {
-    public User(string email, string password)
+    public User(string email, string? password)
     {
         Id = Guid.NewGuid().ToString();
         Email = email;
