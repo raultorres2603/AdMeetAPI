@@ -27,7 +27,6 @@ public class Jwt(ILogger<IJwt> logger) : IJwt
                 new Claim(ClaimTypes.NameIdentifier, u.Id),
                 new Claim("Id", u.Id),
                 new Claim("Email", u.Email!),
-                new Claim("Password", u.Password!),
                 new Claim("Name", u.Profile.Name),
                 new Claim("LastName", u.Profile.LastName),
                 new Claim("City", u.Profile.City),
@@ -64,7 +63,6 @@ public class Jwt(ILogger<IJwt> logger) : IJwt
             var tokenDescriptor = tokenHandler.ReadJwtToken(token);
             var userId = tokenDescriptor.Claims.FirstOrDefault(c => c.Type == "Id")!.Value;
             var email = tokenDescriptor.Claims.FirstOrDefault(c => c.Type == "Email")!.Value;
-            var password = tokenDescriptor.Claims.FirstOrDefault(c => c.Type == "Password")!.Value;
             var name = tokenDescriptor.Claims.FirstOrDefault(c => c.Type == "Name")?.Value;
             var lastName = tokenDescriptor.Claims.FirstOrDefault(c => c.Type == "LastName")?.Value;
             var city = tokenDescriptor.Claims.FirstOrDefault(c => c.Type == "City")?.Value;
@@ -76,7 +74,7 @@ public class Jwt(ILogger<IJwt> logger) : IJwt
             var isAdmin = tokenDescriptor.Claims.FirstOrDefault(c => c.Type == "IsAdmin")?.Value;
 
             logger.LogInformation("Done decoding token");
-            var u = new User(email, password);
+            var u = new User(email, null);
             u.Id = userId;
             if (name != null) u.Profile.Name = name;
             if (lastName != null) u.Profile.LastName = lastName;

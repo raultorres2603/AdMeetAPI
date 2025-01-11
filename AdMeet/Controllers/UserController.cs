@@ -9,9 +9,9 @@ namespace AdMeet.Controllers;
 [Route("api/user")]
 [Consumes("application/json")]
 [Produces("application/json")]
-[TypeFilter(typeof(Tracker))]
 public class UserController(IUserServices userServices, ILogger<UserController> logger) : ControllerBase
 {
+    [TypeFilter(typeof(Tracker))]
     [HttpPost("login/", Name = "Login")]
     public async Task<IActionResult> Login([FromBody] User user)
     {
@@ -30,6 +30,7 @@ public class UserController(IUserServices userServices, ILogger<UserController> 
         return Ok(users);
     }
 
+    [TypeFilter(typeof(Tracker))]
     [HttpPost("register", Name = "Register")]
     public async Task<IActionResult> Register([FromBody] User user)
     {
