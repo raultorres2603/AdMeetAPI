@@ -3,12 +3,10 @@ using AdMeet.Contexts;
 using AdMeet.Inter;
 using AdMeet.Models;
 using AdMeet.Services;
-using DotNetEnv;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 
-Env.Load();
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
